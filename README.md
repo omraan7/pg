@@ -1,0 +1,5 @@
+ASSIGNMENT SQL
+Part 1 IN SCREENSHOT
+Part 2 IN SCREENSHOT   =>>>>    https://dbdiagram.io/d/6a817b0ce093539a9ec3b835
+Part 3 IN APP
+Part 4 IN BONUS
