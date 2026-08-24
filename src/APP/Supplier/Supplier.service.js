@@ -1,5 +1,26 @@
 const supplierRepo = require("./Supplier.repository");
 
+const validateSupplierData = (data) => {
+  if (!data) {
+    throw new Error("must write body");
+  }
+  if (data.name === undefined || data.name === null || data.name === "") {
+    throw new Error("must write name");
+  }
+  if (
+    data.contact_number === undefined ||
+    data.contact_number === null ||
+    data.contact_number === ""
+  ) {
+    throw new Error("must write contact number");
+  }
+  if (typeof data.name !== "string") {
+    throw new Error("name must be string");
+  }
+  if (typeof data.contact_number !== "string") {
+    throw new Error("contact number must be string");
+  }
+};
 const getSuppliers = async () => {
   const suppliers = await supplierRepo.getAllSuppliers();
 
@@ -11,14 +32,16 @@ const getSuppliers = async () => {
 };
 
 const addSupplier = async (data) => {
-  if (!data) throw new Error("must write body ");
-  if (typeof data.name !== "string") throw new Error("name must be string");
+  validateSupplierData(data);
+
   const supplier = await supplierRepo.addSupplier(data);
 
   return supplier;
 };
 
 const updateSupplier = async (id, data) => {
+  validateSupplierData(data);
+
   const supplier = await supplierRepo.updateSupplier(id, data);
 
   if (!supplier) {

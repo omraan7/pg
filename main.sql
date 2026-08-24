@@ -1,3 +1,5 @@
+-- I made the table fields NOT NULL, but Eng SHORA
+--  said they can be left without NOT NULL So, I will do all of this again.
 
 
 -- CREATE DB AND TABLE 
@@ -6,23 +8,23 @@ CREATE DATABASE assignment_sql;
 
 CREATE TABLE Suppliers(
   id  SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  Contact_Number VARCHAR(255) NOT NULL
+  name text ,
+  Contact_Number text
 );
 
 CREATE TABLE Products(
   id  SERIAL PRIMARY KEY ,
-  name VARCHAR(255) NOT NULL,
-  price decimal NOT NULL ,
-  stock_Quantity INT NOT NULL,
-  SupplierID INT NOT NULL,
+  name  text , -- text and null
+  price decimal   ,--null
+  stock_Quantity INT ,--null
+  SupplierID INT,--null
   foreign key (SupplierID) references Suppliers(id)
 );
 CREATE TABLE Sales(
   id  SERIAL PRIMARY KEY ,
-  ProductID INT NOT NULL,
-  Quantity_Sold INT NOT NULL,
-  Sale_Date DATE NOT NULL, 
+  ProductID INT  , --null
+  Quantity_Sold INT , --null
+  Sale_Date DATE  , --null
     foreign key (ProductID) references Products(id)
 );
 
@@ -53,6 +55,8 @@ VALUES ('FreshFoods', '01001234567');
 
 
 -- Insert the following three products, all provided by 'FreshFoods':
+    BEGIN;
+
 INSERT INTO Products (name, price, stock_quantity, supplierid)
 VALUES
 ('Milk', 15, 50,(SELECT id FROM Suppliers WHERE name = 'FreshFoods')),
@@ -60,6 +64,7 @@ VALUES
 ('Bread', 10, 30,(SELECT id FROM Suppliers WHERE name = 'FreshFoods')),
 
 ('Eggs', 20, 40,(SELECT id FROM Suppliers WHERE name = 'FreshFoods'));
+  COMMIT;
 
 
 -- Add a record for the sale of 2 units of 'Milk' made on '2025-05-20'.
@@ -163,4 +168,3 @@ TO store_manager;
 SELECT* FROM Suppliers;
 SELECT* FROM Sales;
 SELECT* FROM Products;
-

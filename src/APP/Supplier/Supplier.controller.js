@@ -57,8 +57,8 @@ const deleteSupplier = async (req, res, next) => {
       await supplierService.deleteSupplier(id);
 
     res.status(200).json({
-      message: "success",
-      data: supplier,
+      message: "success supplier deleted",
+    
     });
   } catch (error) {
     next(error);

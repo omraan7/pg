@@ -9,14 +9,16 @@ const getAllSuppliers = async () => {
 };
 
 const addSupplier = async (data) => {
-  const { name, contact_number } = data;
+    console.log(data);
+
+  const { name, Contact_Number } = data;
 
   const result = await pool.query(
     `INSERT INTO suppliers
-    (name, contact_number)
+    (name, Contact_Number)
     VALUES ($1, $2)
     RETURNING *`,
-    [name, contact_number]
+    [name, Contact_Number]
   );
 
   return result.rows[0];
