@@ -31,13 +31,97 @@ const updateProduct = async (id, data) => {
   return result.rows[0];
 };
 const deleteProduct = async (id) => {
-  const result = await pool.query("delete from products where id=$1 RETURNING *", [id]);
+  const result = await pool.query(
+    "delete from products where id=$1 RETURNING *",
+    [id],
+  );
   return result.rows[0];
 };
 const checkSupplier = async (id) => {
-  const result = await pool.query("SELECT * FROM Suppliers WHERE id = $1", [id]);
+  const result = await pool.query("SELECT * FROM Suppliers WHERE id = $1", [
+    id,
+  ]);
 
   return result.rows[0];
+};
+const checkSupplierByName = async (name) => {
+  const result = await pool.query(
+    "SELECT * FROM suppliers WHERE name = $1",
+    [name]
+  );
+
+  return result.rows[0];
+};
+
+
+const addThreeProducts = async (data) => {
+  try {
+    await pool.query("BEGIN");
+
+    const columns = [
+      "name",
+      "price",
+      "stock_quantity",
+      "supplierName"
+    ];
+
+    const products = data.flatMap(
+      ({ name, price, stock_quantity, supplierName }) => [
+        name,
+        price,
+        stock_quantity,
+        supplierName
+      ]
+    );
+
+    const values = data
+      .map((_, index) => {
+        const start = index * columns.length;
+
+        return `(${columns
+          .map(
+            (_, columnIndex) =>
+              `$${start + columnIndex + 1}`
+          )
+          .join(", ")})`;
+      })
+      .join(", ");
+
+    const query = `
+  INSERT INTO products
+  (name, price, stock_quantity, supplierid)
+
+  SELECT
+    v.name,
+    v.price::numeric,
+    v.stock_quantity::integer,
+    s.id
+
+  FROM (
+    VALUES ${values}
+  ) AS v(
+    name,
+    price,
+    stock_quantity,
+    supplierName
+  )
+
+  JOIN suppliers s
+    ON s.name = v.supplierName
+
+  RETURNING products.*;
+`;
+
+    const result = await pool.query(query, products);
+
+    await pool.query("COMMIT");
+
+    return result.rows;
+
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    throw error;
+  }
 };
 
 module.exports = {
@@ -46,5 +130,7 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
-  checkSupplier
+  checkSupplier,
+  checkSupplierByName,
+  addThreeProducts,
 };

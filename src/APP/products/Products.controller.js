@@ -16,6 +16,19 @@ const addProducts = async (req, res, next) => {
     next(error);
   }
 };
+const addThreeProducts = async (req, res, next) => {
+  try {
+    const result = await getAllProductFromService.addThreeProducts(req.body);
+
+    res.status(201).json({
+      message: "success 3 products added",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -54,4 +67,5 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
+  addThreeProducts,
 };
